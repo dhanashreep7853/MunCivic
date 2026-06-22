@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Track Complaint – Municipal Complaint System{% endblock %}
+{% block title %}Track Complaint – MunCivic {% endblock %}
 
 {% block extra_head %}
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
@@ -99,6 +99,7 @@ body { background:var(--gf); font-family:'DM Sans',sans-serif; }
 
     <div class="search-card">
         <form method="post" id="trackForm">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <label class="field-label"><i class="bi bi-hash"></i> Enter Complaint ID</label>
             <div class="search-row">
                 <input name="cid" id="cidInput" class="field-input"
@@ -179,7 +180,7 @@ body { background:var(--gf); font-family:'DM Sans',sans-serif; }
             <div class="info-full">
                 <label class="info-label">Evidence / Photo Attached</label>
                 <div class="img-frame">
-                    <img src="{{ url_for('static', filename='uploads/' + complaint['image']) }}" alt="Complaint Evidence">
+                    <img src="{{ image_url }}" alt="Complaint Evidence">
                 </div>
             </div>
             {% endif %}

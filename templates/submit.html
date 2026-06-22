@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Submit Complaint – Municipal Complaint System{% endblock %}
+{% block title %}Submit Complaint – MunCivic {% endblock %}
 
 {% block extra_head %}
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
@@ -151,7 +151,8 @@ body { background:var(--gf); font-family:'DM Sans',sans-serif; }
     {% endif %}
 
     <div class="form-card">
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" action="/submit" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
             <div class="field-group" style="--delay:0.04s">
                 <label class="field-label"><i class="bi bi-person-fill"></i> Full Name</label>
@@ -179,7 +180,7 @@ body { background:var(--gf); font-family:'DM Sans',sans-serif; }
                     <option value="Buildings">🏚️ Dangerous Buildings</option>
                     <option value="Tree Cutting">🪓 Illegal Tree Cutting</option>
                     <option value="Garden">🎡 Garden Maintenance</option>
-                    <option value="air Pollution">💨 Air Pollution</option>
+                    <option value="Air Pollution">💨 Air Pollution</option>
                     <option value="Dead Animal">🐕 Dead Animal Removal</option>
                     <option value="Toilet">🚻 Public Toilet Issues</option>
                     <option value="Food Safety">🍲 Food Safety</option>
@@ -265,7 +266,7 @@ body { background:var(--gf); font-family:'DM Sans',sans-serif; }
                 <img id="ai-image-preview" src="" alt="Preview" style="display:none;max-height:180px;border-radius:10px;">
             </div>
             <button id="generate-image-btn" style="display:none;" class="btn-apply">Generate Complaint</button>
-            <input type="file" id="aiImageInput" accept="image/*" style="display:none" onchange="handleAIImageUpload(event)">
+            <input type="file" id="aiImageInput"name="image" accept="image/*" style="display:none" onchange="handleAIImageUpload(event)">
         </div>
         <div id="ai-result" style="display:none;" class="ai-result-view">
             <div class="result-item"><label>Detected Category</label><span id="detected-cat" class="ai-badge">-</span></div>
@@ -286,10 +287,12 @@ let mediaRecorder,audioChunks=[],recordedAudioBlob=null,selectedImageFile=null;
 window.toggleAIPanel=function(){const p=document.getElementById('ai-panel');p.style.display=(p.style.display==='block')?'none':'block';};
 window.switchMode=function(m){['voice','image'].forEach(x=>{document.getElementById(x+'-mode-btn').classList.toggle('active',x===m);document.getElementById(x+'-section').classList.toggle('active',x===m);});document.getElementById('ai-result').style.display='none';document.getElementById('audio-preview').style.display='none';document.getElementById('generate-audio-btn').style.display='none';document.getElementById('generate-image-btn').style.display='none';};
 document.getElementById('start-record').onclick=async function(){const b=this;if(b.classList.contains('recording')){mediaRecorder.stop();b.classList.remove('recording');b.innerHTML='<i class="bi bi-mic-fill"></i><div class="pulse-ring"></div>';return;}try{const s=await navigator.mediaDevices.getUserMedia({audio:true});mediaRecorder=new MediaRecorder(s);audioChunks=[];mediaRecorder.ondataavailable=e=>audioChunks.push(e.data);mediaRecorder.onstop=()=>{recordedAudioBlob=new Blob(audioChunks,{type:mediaRecorder.mimeType||'audio/webm'});const u=URL.createObjectURL(recordedAudioBlob),ap=document.getElementById('audio-preview');ap.src=u;ap.style.display='block';document.getElementById('generate-audio-btn').style.display='block';document.getElementById('ai-status').innerText="Recording saved. Click 'Generate Complaint'.";};mediaRecorder.start();b.classList.add('recording');b.innerHTML='<i class="bi bi-stop-fill"></i><div class="pulse-ring"></div>';document.getElementById('ai-status').innerText="Recording... Click again to stop.";}catch(e){document.getElementById('ai-status').innerText="Microphone permission required.";}};
-document.getElementById('generate-audio-btn').onclick=async function(){if(!recordedAudioBlob)return;const s=document.getElementById('ai-status'),b=this;s.innerText="Analyzing voice...";b.disabled=true;b.innerText="Analyzing...";const fd=new FormData();fd.append('audio',recordedAudioBlob,'recording.webm');try{const r=await fetch('/analyse-complaint',{method:'POST',body:fd}),d=await r.json();if(d.error)throw new Error(d.error);document.getElementById('ai-result').style.display='block';document.getElementById('detected-cat').innerText=d.category;document.getElementById('detected-desc').innerText=d.description;s.innerText="✅ Analysis complete!";}catch(e){s.innerText="❌ Error: "+e.message;}finally{b.disabled=false;b.innerText="Generate Complaint";}};
+document.getElementById('generate-audio-btn').onclick=async function(){if(!recordedAudioBlob)return;const s=document.getElementById('ai-status'),b=this;s.innerText="Analyzing voice...";b.disabled=true;b.innerText="Analyzing...";const fd=new FormData();fd.append('audio',recordedAudioBlob,'recording.webm');try{const csrfToken = document.querySelector('input[name="csrf_token"]').value; const r=await fetch('/analyse-complaint',{method:'POST',headers: { 'X-CSRFToken': csrfToken },body:fd}),d=await r.json();if(d.error)throw new Error(d.error);document.getElementById('ai-result').style.display='block';document.getElementById('detected-cat').innerText=d.category;document.getElementById('detected-desc').innerText=d.description;s.innerText="✅ Analysis complete!";}catch(e){s.innerText="❌ Error: "+e.message;}finally{b.disabled=false;b.innerText="Generate Complaint";}};
 window.handleAIImageUpload=function(e){const f=e.target.files[0];if(!f)return;selectedImageFile=f;const r=new FileReader();r.onload=(e)=>{const p=document.getElementById('ai-image-preview'),pl=document.querySelector('#image-upload-zone .upload-placeholder');p.src=e.target.result;p.style.display='block';if(pl)pl.style.display='none';};r.readAsDataURL(f);document.getElementById('generate-image-btn').style.display='block';};
-document.getElementById('generate-image-btn').onclick=async function(){if(!selectedImageFile)return;const s=document.getElementById('image-status'),b=this;s.innerText="Analyzing image...";b.disabled=true;b.innerText="Analyzing...";const fd=new FormData();fd.append('image',selectedImageFile);try{const r=await fetch('/analyse-complaint',{method:'POST',body:fd}),d=await r.json();if(d.error)throw new Error(d.error);document.getElementById('ai-result').style.display='block';document.getElementById('detected-cat').innerText=d.category;document.getElementById('detected-desc').innerText=d.description;s.innerText="✅ Analysis complete!";}catch(e){s.innerText="❌ Error: "+e.message;}finally{b.disabled=false;b.innerText="Generate Complaint";}};
-window.autoFillForm=function(){const cs=document.getElementById('categorySelect'),dt=document.getElementById('descriptionText'),cat=document.getElementById('detected-cat').innerText.trim(),desc=document.getElementById('detected-desc').innerText.trim();if(cs&&cat){const m=Array.from(cs.options).find(o=>o.value.toLowerCase()===cat.toLowerCase());cs.value=m?m.value:"other";}if(dt&&desc)dt.value=desc;toggleAIPanel();const ft=document.querySelector('.form-card');if(ft)ft.scrollIntoView({behavior:'smooth',block:'start'});};
+document.getElementById('generate-image-btn').onclick=async function(){if(!selectedImageFile)return;const s=document.getElementById('image-status'),b=this;s.innerText="Analyzing image...";b.disabled=true;b.innerText="Analyzing...";const fd=new FormData();fd.append('image',selectedImageFile);try{const csrfToken = document.querySelector('input[name="csrf_token"]').value; const r=await fetch('/analyse-complaint',{method:'POST',headers: { 'X-CSRFToken': csrfToken },body:fd}),d=await r.json();if(d.error)throw new Error(d.error);document.getElementById('ai-result').style.display='block';document.getElementById('detected-cat').innerText=d.category;document.getElementById('detected-desc').innerText=d.description;s.innerText="✅ Analysis complete!";}catch(e){s.innerText="❌ Error: "+e.message;}finally{b.disabled=false;b.innerText="Generate Complaint";}};
+window.autoFillForm=function(){const cs=document.getElementById('categorySelect'),dt=document.getElementById('descriptionText'),cat=document.getElementById('detected-cat').innerText.trim(),desc=document.getElementById('detected-desc').innerText.trim();if(cs&&cat){const m=Array.from(cs.options).find(o=>o.value.toLowerCase()===cat.toLowerCase());cs.value=m?m.value:"other";}if(dt&&desc)dt.value=desc;
+
+toggleAIPanel();const ft=document.querySelector('.form-card');if(ft)ft.scrollIntoView({behavior:'smooth',block:'start'});};
 });
 </script>
 {% endblock %}

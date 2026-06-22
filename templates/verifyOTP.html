@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Verify OTP – Municipal Complaint System{% endblock %}
+{% block title %}Verify OTP – MunCivic {% endblock %}
 
 {% block extra_head %}
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
@@ -126,6 +126,7 @@ body { background:var(--gf); font-family:'DM Sans',sans-serif; }
         </div>
 
         <form method="post" autocomplete="off">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="field-group">
                 <label class="field-label"><i class="bi bi-shield-lock-fill"></i> Verification Code</label>
                 <input name="otp" type="text" class="otp-input"

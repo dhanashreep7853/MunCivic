@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Municipal Complaint System{% endblock %}</title>
+    <title>{% block title %}MunCivic{% endblock %}</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -71,11 +71,15 @@
         }
 
         .navbar-brand .emblem {
-            width: 36px; height: 36px; min-width: 36px;
-            background: var(--gold);
-            border-radius: 50%;
+            width: 40px; height: 40px; min-width: 40px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.1rem;
+            overflow: hidden;
+        }   
+        
+        .navbar-brand .emblem img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         /* ── Hamburger ── */
@@ -199,8 +203,8 @@
         <div class="container-fluid">
 
             <a class="navbar-brand" href="/home">
-                <div class="emblem">🏛️</div>
-                <span>Municipal Complaint System</span>
+                <div class="emblem"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="MunCivic Logo" height="40"></div>
+                <span>MunCivic</span>
             </a>
 
             <button class="navbar-toggler" type="button"
@@ -246,7 +250,7 @@
 
     <!-- ══ FOOTER ══ -->
     <footer class="footer">
-        <div>© 2026 Municipal Complaint Management System &nbsp;|&nbsp; Government of India</div>
+        <div>© 2026 MunCivic &nbsp;|&nbsp; Government of India</div>
         <div class="small opacity-75 mt-1">Serving Citizens with Transparency &amp; Integrity</div>
     </footer>
 

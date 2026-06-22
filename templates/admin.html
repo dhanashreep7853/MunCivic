@@ -179,9 +179,9 @@
 
                         <!-- Photo thumbnail -->
                         <td>
-                            {% if c['image'] %}
-                            <a href="/static/uploads/{{ c['image'] }}" target="_blank">
-                                <img src="/static/uploads/{{ c['image'] }}" class="thumb" alt="Photo">
+                            {% if item.image_url %}
+                            <a href="{{ item.image_url }}" target="_blank">
+                                <img src="{{ item.image_url }}" class="thumb" alt="Photo">
                             </a>
                             {% else %}
                             <span class="no-img">—</span>
@@ -307,7 +307,7 @@
 <style>
 :root {
     --green-deep:  #0f3d26;
-    --green-dark:  #1a5c38;
+    --green-dark:  #1a4731;
     --green-mid:   #2d8653;
     --green-faint: #eaf4ee;
     --green-glow:  rgba(45,134,83,0.12);

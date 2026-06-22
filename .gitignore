@@ -1,23 +1,46 @@
-# Environment variables (NEVER commit this)
+# ============================================================
+# .gitignore — NEVER commit these files to GitHub
+# ============================================================
+
+# Environment variables (contains your passwords and API keys!)
 .env
+
+# Database files (SQLite — should not be in git)
+*.db
+*.sqlite
+*.sqlite3
 
 # Python cache
 __pycache__/
+*.py[cod]
+*$py.class
 *.pyc
-*.pyo
-*.pyd
-
-# Database (optional - remove if you want to track it)
-complaints.db
+.pytest_cache/
 
 # Virtual environment
 venv/
 env/
 .venv/
+ENV/
+
+# Uploaded files (user-uploaded images — can be large)
+static/uploads/
 
 # OS files
 .DS_Store
 Thumbs.db
 
-# VS Code
+# IDE files
 .vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Distribution
+dist/
+build/
+*.egg-info/

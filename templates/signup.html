@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Sign Up – Municipal Complaint System{% endblock %}
+{% block title %}Sign Up – MunCivic {% endblock %}
 
 {% block extra_head %}
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
@@ -130,6 +130,7 @@ body { background:var(--gf); font-family:'DM Sans',sans-serif; }
         {% endif %}
 
         <form method="post" id="signupForm" autocomplete="off">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <input type="text" name="fakeuser" style="display:none">
             <input type="password" name="fakepass" style="display:none">
 
@@ -173,7 +174,7 @@ body { background:var(--gf); font-family:'DM Sans',sans-serif; }
                 <label class="field-label"><i class="bi bi-person-badge-fill"></i> Select Role</label>
                 <select name="role" id="roleSelect" class="field-input field-select" onchange="toggleAdminField()" required>
                     <option value="user">👤 Citizen (User)</option>
-                    <option value="admin">🛡️ Municipal Admin</option>
+                    <option value="admin">🛡️ MunCivic Admin</option>
                 </select>
             </div>
 

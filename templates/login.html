@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Login – Municipal Complaint System{% endblock %}
+{% block title %}Login – MunCivic{% endblock %}
 
 {% block extra_head %}
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
@@ -207,6 +207,7 @@ body { background: var(--gf); font-family: 'DM Sans', sans-serif; }
 
         <!-- Form -->
         <form method="post" autocomplete="off">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <input type="text" style="display:none">
             <input type="password" style="display:none">
 
@@ -268,7 +269,11 @@ function togglePw(inputId, iconId) {
 }
 window.addEventListener('load', () => {
     setTimeout(() => {
-        document.querySelectorAll('input:not([type=checkbox])').forEach(el => el.value = '');
+        // BEFORE (clears csrf_token too!)
+        // document.querySelectorAll('input:not([type=checkbox])').forEach(el => el.value = '');
+
+        // AFTER (only clears visible text/email/password inputs)
+        document.querySelectorAll('input:not([type=checkbox]):not([type=hidden])').forEach(el => el.value = '');    
     }, 10);
 });
 </script>
