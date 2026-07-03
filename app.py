@@ -68,7 +68,9 @@ if not IS_DEV:
 DATABASE_URL = os.getenv("DATABASE_URL","").strip() # load every line in .env
 if DATABASE_URL:
     if DATABASE_URL.startswith("postgres://"):
-        DATABASE_URL = DATABASE_URL.replace("postgres://","postgresql://",1) #url scheme - tells your app which database driver to load
+        DATABASE_URL = DATABASE_URL.replace("postgres://","postgresql+psycopg://",1)
+    elif DATABASE_URL.startswith("postgresql://"):
+        DATABASE_URL = DATABASE_URL.replace("postgresql://","postgresql+psycopg://",1)
     app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
     print(f"[DB] PostgreSQL connected: {DATABASE_URL.split('@')[-1]}") 
 else:
